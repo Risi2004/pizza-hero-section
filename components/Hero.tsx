@@ -41,23 +41,19 @@ function PizzaModel({ pointerRef }: { pointerRef: RefObject<PointerState> }) {
   );
 }
 
-function PizzaAuraFallback({
-  pointerRef,
-}: {
-  pointerRef: RefObject<PointerState>;
-}) {
+function PizzaAuraFallback() {
   const groupRef = useRef<Group>(null);
 
   useFrame(({ clock }) => {
     if (!groupRef.current) return;
 
     const t = clock.getElapsedTime();
-    // Pointer-reactive tilt blended with idle motion for premium depth.
-    const targetTiltX = pointerRef.current?.y ?? 0;
-    const targetTiltY = (pointerRef.current?.x ?? 0) + t * 0.18;
+    // Keep fallback ring ambient-only: no pointer-follow behavior.
+    const targetTiltX = Math.sin(t * 0.42) * 0.06;
+    const targetTiltY = t * 0.18;
 
-    groupRef.current.rotation.x += (targetTiltX - groupRef.current.rotation.x) * 0.045;
-    groupRef.current.rotation.y += (targetTiltY - groupRef.current.rotation.y) * 0.045;
+    groupRef.current.rotation.x += (targetTiltX - groupRef.current.rotation.x) * 0.04;
+    groupRef.current.rotation.y += (targetTiltY - groupRef.current.rotation.y) * 0.04;
     groupRef.current.position.y = Math.sin(t * 0.8) * 0.05;
   });
 
@@ -73,6 +69,7 @@ function PizzaAuraFallback({
 
 export function Hero() {
   const [hasPizzaGlb, setHasPizzaGlb] = useState(false);
+  const [pizzaSrc, setPizzaSrc] = useState("/pizza-realistic.webp");
   const pointerRef = useRef<PointerState>({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -126,14 +123,14 @@ export function Hero() {
           </p>
 
           <h1 className="font-serif text-4xl leading-tight text-white sm:text-5xl lg:text-6xl">
-            Stone-Baked{" "}
-            <span className="bg-gradient-to-r from-[#e63946] via-[#ff6b6b] to-[#ffb703] bg-clip-text text-transparent">
+            <span className="text-white">Stone-Baked</span>{" "}
+            <span className="text-[#ffb703] drop-shadow-[0_0_16px_rgba(255,183,3,0.22)]">
               Perfection
             </span>
             , Delivered to Your Door.
           </h1>
 
-          <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-white/75 lg:mx-0 lg:text-lg">
+          <p className="mx-auto mt-6 max-w-xl text-base font-light leading-8 text-white/72 lg:mx-0 lg:text-lg">
             Experience the authentic taste of Italy with our hand-stretched dough
             and farm-fresh ingredients.
           </p>
@@ -148,6 +145,7 @@ export function Hero() {
             <motion.button
               type="button"
               aria-label="Order now from Crust and Craft"
+              initial="rest"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               animate={{
@@ -158,9 +156,15 @@ export function Hero() {
                 ],
               }}
               transition={{ duration: 2.3, repeat: Infinity, ease: "easeInOut" }}
-              className="w-full rounded-full bg-[#e63946] px-8 py-3 text-sm font-semibold text-white sm:w-auto"
+              className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#e63946] px-8 py-3 text-sm font-semibold text-white sm:w-auto"
             >
-              Order Now
+              <span>Order Now</span>
+              <span
+                className="transition-transform duration-200 ease-out group-hover:translate-x-1"
+                aria-hidden="true"
+              >
+                →
+              </span>
             </motion.button>
 
             <motion.button
@@ -168,7 +172,7 @@ export function Hero() {
               aria-label="View menu options"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className="w-full rounded-full border border-[#ffb703]/70 bg-transparent px-8 py-3 text-sm font-semibold text-[#ffb703] sm:w-auto"
+              className="w-full rounded-full border border-[#ffb703]/70 bg-transparent px-8 py-3 text-sm font-semibold text-[#ffb703] transition-colors hover:bg-[#ffb703]/12 hover:border-[#ffb703] sm:w-auto"
             >
               View Menu
             </motion.button>
@@ -206,11 +210,7 @@ export function Hero() {
                 />
                 {/* Rim light to carve out model silhouette against dark background. */}
                 <pointLight position={[-2.3, 0.6, -2.6]} intensity={1.2} color="#e63946" />
-                {hasPizzaGlb ? (
-                  <PizzaModel pointerRef={pointerRef} />
-                ) : (
-                  <PizzaAuraFallback pointerRef={pointerRef} />
-                )}
+                {hasPizzaGlb ? <PizzaModel pointerRef={pointerRef} /> : <PizzaAuraFallback />}
                 <ContactShadows
                   opacity={0.45}
                   blur={1.7}
@@ -222,11 +222,12 @@ export function Hero() {
             </div>
 
             <Image
-              src="/pizza-hero-placeholder.svg"
+              src={pizzaSrc}
               alt="Signature stone-baked pizza with fresh toppings"
               width={920}
               height={920}
               priority
+              onError={() => setPizzaSrc("/pizza-hero-placeholder.svg")}
               className="relative z-10 h-auto w-full rounded-[1.4rem] object-cover"
             />
           </motion.div>
