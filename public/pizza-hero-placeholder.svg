@@ -1,0 +1,20 @@
+<svg width="1200" height="1200" viewBox="0 0 1200 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="1200" rx="100" fill="#141414"/>
+  <circle cx="600" cy="600" r="420" fill="#DFA35C"/>
+  <circle cx="600" cy="600" r="386" fill="#E8B56E"/>
+  <circle cx="600" cy="600" r="345" fill="#E63946"/>
+  <circle cx="460" cy="510" r="52" fill="#FFB703"/>
+  <circle cx="720" cy="490" r="48" fill="#FFB703"/>
+  <circle cx="790" cy="690" r="58" fill="#FFB703"/>
+  <circle cx="510" cy="760" r="44" fill="#FFB703"/>
+  <circle cx="360" cy="640" r="50" fill="#FFB703"/>
+  <circle cx="650" cy="760" r="38" fill="#F9D6A8"/>
+  <circle cx="430" cy="410" r="34" fill="#F9D6A8"/>
+  <circle cx="770" cy="585" r="32" fill="#F9D6A8"/>
+  <ellipse cx="560" cy="565" rx="24" ry="14" transform="rotate(-20 560 565)" fill="#4CAF50"/>
+  <ellipse cx="700" cy="655" rx="24" ry="14" transform="rotate(30 700 655)" fill="#4CAF50"/>
+  <ellipse cx="505" cy="675" rx="22" ry="13" transform="rotate(12 505 675)" fill="#4CAF50"/>
+  <text x="600" y="1080" text-anchor="middle" fill="#F6F1E9" font-size="52" font-family="Arial, sans-serif" font-weight="700">
+    Crust &amp; Craft Signature Pizza
+  </text>
+</svg>
