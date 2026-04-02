@@ -6,15 +6,56 @@ import { Preloader } from "@/components/Preloader";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
+const heroAssets = [
+  "/pizza-realistic.webp",
+  "/pizza-hero-placeholder.svg",
+  "/ingredient-basil.svg",
+  "/ingredient-tomato.svg",
+];
+
+function preloadImage(src: string): Promise<void> {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = () => {
+      if (typeof image.decode === "function") {
+        image.decode().finally(resolve);
+        return;
+      }
+      resolve();
+    };
+    image.onerror = () => resolve();
+    image.src = src;
+  });
+}
+
+function preloadOptionalGlb(url: string): Promise<void> {
+  return fetch(url, { cache: "force-cache" })
+    .then((response) => {
+      if (!response.ok) return;
+      return response.arrayBuffer().then(() => undefined);
+    })
+    .catch(() => undefined);
+}
+
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setIsLoading(false);
-    }, 2100);
+    let active = true;
+    const maxWaitGuard = new Promise((resolve) => window.setTimeout(resolve, 7000));
+    const preloadHeroResources = Promise.all([
+      ...heroAssets.map((asset) => preloadImage(asset)),
+      // Optional model preload for smoother hero entry when GLB exists.
+      preloadOptionalGlb("/models/pizza.glb"),
+    ]);
 
-    return () => window.clearTimeout(timer);
+    void Promise.race([preloadHeroResources, maxWaitGuard]).then(() => {
+      if (active) setIsLoading(false);
+    });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   return (

@@ -145,7 +145,6 @@ export function Hero() {
             <motion.button
               type="button"
               aria-label="Order now from Crust and Craft"
-              initial="rest"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               animate={{
